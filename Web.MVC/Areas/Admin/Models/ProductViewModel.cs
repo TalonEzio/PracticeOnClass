@@ -14,6 +14,7 @@ namespace Web.MVC.Areas.Admin.Models
         public string Name { get; set; }
 
         [Display(Name = "Hình ảnh")]
+        [Required(ErrorMessage = "{0} là bắt buộc")]
         public string ImageUrl { get; set; }
 
         [Display(Name = "Giá sản phẩm ($)")]

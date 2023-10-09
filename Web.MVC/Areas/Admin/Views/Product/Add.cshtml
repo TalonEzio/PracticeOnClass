@@ -5,7 +5,7 @@
 
 <h2>Thêm sản phẩm mới</h2>
 
-@using (Html.BeginForm("Add","Product",FormMethod.Post,new {enctype="multipart/form-data"}))
+@using (Html.BeginForm("Add", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
@@ -31,6 +31,7 @@
         <div class="col-4">
             @Html.EditorFor(x => x.ImageUrl,
                 new { htmlAttributes = new { @class = "form-control", type = "file", min = "0", step = "0.01", value = "0" } })
+            @Html.ValidationMessageFor(x => x.ImageUrl, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -53,7 +54,8 @@
     <div class="row mb-2">
         @Html.LabelFor(x => x.Rate, new { @class = "col-form-label col-2" })
         <div class="col-4">
-            @Html.EditorFor(x => x.Rate, new { htmlAttributes = new { @class = "form-control", min = "0", step = "1", value = "0" } })
+            <div class="rating form-control border-0"></div>
+            @Html.TextBoxFor(x => x.Rate, new { @class = "hidden" })
             @Html.ValidationMessageFor(x => x.Rate, "", new { @class = "text-danger my-3" })
         </div>
     </div>
@@ -63,4 +65,29 @@
             <button class="btn btn-primary">Thêm mới</button>
         </div>
     </div>
+}
+@section footerCss
+{
+    <link href="~/Assets/Common/Library/RatingStar/jquery.raty.css" rel="stylesheet" />
+    <style>
+        .hidden {
+            width: 0;
+            height: 0;
+            -ms-opacity: 0;
+            opacity: 0;
+        }
+    </style>
+}
+@section footerJs
+{
+    <script src="~/Assets/Common/Library/RatingStar/jquery.raty.js"></script>
+    <script>
+        $('.rating').raty({
+            path: '/Assets/Common/Library/RatingStar/Images',
+            click: function (score, evt) {
+                //alert('ID: ' + this.id + "\nscore: " + score + "\nevent: " + evt);
+                $('input#Rate').val(score);
+            }
+        });
+    </script>
 }
