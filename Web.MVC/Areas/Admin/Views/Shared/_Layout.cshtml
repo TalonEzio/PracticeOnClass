@@ -1,0 +1,67 @@
+﻿
+@{
+    Layout = null;
+    string title = ViewBag.Title ?? "";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@title</title>
+    @RenderSection("headerCss", false)
+    <link href="~/Assets/Common/Library/bootstrap-5.3.2/css/bootstrap.css" rel="stylesheet" />
+    @RenderSection("footerCss", false)
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        @Html.ActionLink("Trang chủ", "Index", "Home", new { area = "Admin" }, new { @class = "nav-link" })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Sản phẩm", "Info", "Product", new { area = "Admin" }, new { @class = "nav-link" })
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Chức năng
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                    </li>
+                </ul>
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        @RenderBody()
+    </div>
+
+
+    @RenderSection("headerJs", false)
+    <script src="~/Assets/Common/Library/JqueryAIO/jquery-3.7.1.js"></script>
+    <script src="~/Assets/Common/Library/JqueryAIO/jquery.validate.1.18.0.js"></script>
+    <script src="~/Assets/Common/Library/JqueryAIO/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Assets/Common/Library/bootstrap-5.3.2/js/bootstrap.js"></script>
+    @RenderSection("footerJs", false)
+</body>
+</html>

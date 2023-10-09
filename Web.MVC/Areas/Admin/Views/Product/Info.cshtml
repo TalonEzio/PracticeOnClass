@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Web.MVC.Areas.Admin.Models.ProductViewModel>
+@{
+    ViewBag.Title = "Info";
+}
+
+<h2>Danh sách sản phẩm</h2>
+
+@Html.ActionLink("Thêm mới", "Add", "Product", new { area = "Admin" }, new { @class = "btn btn-primary" })
+
+<div class="row">
+    <div class="col-auto">
+        <div class="row my-1">
+            @foreach (var product in Model)
+            {
+                <div class="col-xxl-2 col-xl-3 col-md-4 col-sm-6 m-2">
+                    <div class="card">
+                        <div class="card-header p-0">
+                            <img src="@product.ImageUrl" class="w-100 h-100" alt="Ảnh sản phẩm" />
+                        </div>
+                        <div class="card-body">
+                            <h5 class="text-center lead">@product.Name</h5>
+                            <p class="fw-bolder text-center">$@product.Price</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
