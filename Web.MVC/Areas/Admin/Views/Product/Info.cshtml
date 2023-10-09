@@ -3,23 +3,43 @@
     ViewBag.Title = "Info";
 }
 
-<h2>Danh sách sản phẩm</h2>
+<h2 class="my-2">
+    Danh sách sản phẩm @Html.ActionLink("Thêm mới", "Add", "Product", new { area = "Admin" }, new { @class = "btn btn-primary" })
+</h2>
 
-@Html.ActionLink("Thêm mới", "Add", "Product", new { area = "Admin" }, new { @class = "btn btn-primary" })
 
 <div class="row">
     <div class="col-auto">
         <div class="row my-1">
             @foreach (var product in Model)
             {
-                <div class="col-xxl-2 col-xl-3 col-md-4 col-sm-6 m-2">
-                    <div class="card">
-                        <div class="card-header p-0">
-                            <img src="@product.ImageUrl" class="w-100 h-100" alt="Ảnh sản phẩm" />
+                <div class="col-xxl-2 col-xl-3 col-md-4 col-sm-6 col-6 mb-3">
+                    <div class="card border-0">
+                        @if (product.Quantity == 0)
+                        {
+                            <div class="no-product">
+                                <span class="no-product-text">Hết hàng</span>
+                            </div>
+                        }
+                        <div class="card-header p-0 product-image border-0">
+                            <img src="@product.ImageUrl" class="w-100 h-100 " alt="Ảnh sản phẩm" />
                         </div>
                         <div class="card-body">
-                            <h5 class="text-center lead">@product.Name</h5>
-                            <p class="fw-bolder text-center">$@product.Price</p>
+                            <h5 class="text-center text-truncate lead">@product.Name</h5>
+                            @if (product.Discount == 0)
+                            {
+                                <p class="fw-bolder text-center">$@Math.Round(product.Price ?? 0,2)</p>
+                            }
+                            else
+                            {
+                                var newPrice = product.Price - product.Price * product.Discount / 100;
+                                <p class="fw-bolder text-center">
+                                    $@Math.Round(newPrice ?? 0,2)
+                                    <span class="text-danger text-decoration-line-through price-small">$@Math.Round(product.Price ?? 0,2)</span>
+                                </p>
+                            }
+
+                            <div data-score="@product.Rate" class="rating"></div>
                         </div>
                     </div>
                 </div>
@@ -27,3 +47,57 @@
         </div>
     </div>
 </div>
+@section footerCss
+{
+    <link href="~/Assets/Common/Library/RatingStar/jquery.raty.css" rel="stylesheet" />
+    <style>
+        .rating {
+            display: flex;
+            -o-justify-content: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+            height: 20px;
+        }
+
+        .product-image {
+            height: 200px;
+        }
+
+        .no-product {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-color: #fcfcfc;
+            opacity: 0.8;
+        }
+
+        .no-product-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            background-color: #fa6b6b;
+            padding: 12px;
+            
+            border-radius: 50px;
+        }
+
+        .price-small {
+            font-size: 80%;
+            opacity: 0.9;
+        }
+    </style>
+}
+@section footerJs
+{
+    <script src="~/Assets/Common/Library/RatingStar/jquery.raty.js"></script>
+    <script>
+        $('.rating').raty({
+            path: '/Assets/Common/Library/RatingStar/Images',
+            readOnly: true
+        });
+    </script>
+}

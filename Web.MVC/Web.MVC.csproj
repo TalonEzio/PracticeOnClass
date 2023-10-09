@@ -126,6 +126,13 @@
     <Content Include="Assets\Common\Library\bootstrap-5.3.2\css\bootstrap.min.css" />
     <Content Include="Assets\Common\Library\bootstrap-5.3.2\js\bootstrap.js" />
     <Content Include="Assets\Common\Library\JqueryAIO\jquery.validate.1.18.0.js" />
+    <Content Include="Assets\Common\Library\RatingStar\Images\cancel-off.png" />
+    <Content Include="Assets\Common\Library\RatingStar\Images\cancel-on.png" />
+    <Content Include="Assets\Common\Library\RatingStar\Images\star-half.png" />
+    <Content Include="Assets\Common\Library\RatingStar\Images\star-off.png" />
+    <Content Include="Assets\Common\Library\RatingStar\Images\star-on.png" />
+    <Content Include="Assets\Common\Library\RatingStar\jquery.raty.css" />
+    <Content Include="Assets\Common\Library\RatingStar\jquery.raty.js" />
     <Content Include="Global.asax" />
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
@@ -146,6 +153,7 @@
     <Content Include="Uploads\Images\7.jpg" />
     <Content Include="Uploads\Images\8.jpg" />
     <Content Include="Uploads\Images\9.jpg" />
+    <Content Include="Uploads\Images\NoProduct.png" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
