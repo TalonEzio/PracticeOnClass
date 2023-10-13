@@ -1,0 +1,13 @@
+﻿@model Web.MVC.Areas.Admin.Models.CategoryViewModel
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Xóa danh mục</h2>
+<h3>Bạn chắc chắn muốn xóa danh mục @Model.Name - @Model.VietnameseName chứ?</h3>
+@using (Html.BeginForm())
+{
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    @Html.ActionLink("Quay lại","Index",null,new {@class="btn btn-primary"})
+}

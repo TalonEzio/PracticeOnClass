@@ -1,0 +1,14 @@
+﻿@model Web.MVC.Areas.Admin.Models.ProductViewModel
+
+@{
+    ViewBag.Title = "Xóa sản phẩm";
+}
+
+<h2>Xóa sản phẩm</h2>
+<p class="lead">Bạn chắc chắn xóa @Model.Name chứ?</p>
+<img src="@Model.ImageUrl" style="width: 300px;"/>
+@using (Html.BeginForm("Delete","Product",FormMethod.Post,new {@class="mt-3"}))
+{
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    @Html.ActionLink("Quay về trang chủ","Index",null,new {@class="btn btn-primary"})
+}

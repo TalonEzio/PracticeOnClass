@@ -1,0 +1,126 @@
+﻿@using Web.MVC.Areas.Admin.Models
+@model ProductViewModel
+
+@{
+    ViewBag.Title = "Update";
+    var categoryListViewModel = ViewBag.categoryListViewModel as IEnumerable<CategoryViewModel> ?? new List<CategoryViewModel>();
+    var selectCategory = new SelectList(categoryListViewModel, "Id", "VietnameseName");
+}
+
+<h2>Cập nhật sản phẩm</h2>
+
+@using (Html.BeginForm("Update", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(x => x.Id)
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.Name, new { @class = "col-form-label col-2" })
+        <div class="col-md-6">
+            @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Name, "", new { @class = "text-danger my-3" })
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.Price, new { @class = "col-form-label col-2" })
+        <div class="col-md-6">
+            @Html.EditorFor(x => x.Price,
+                new { htmlAttributes = new { @class = "form-control", fake = Model.Price, type = "number", step = "0.01" } })
+            @Html.ValidationMessageFor(x => x.Price, "", new { @class = "text-danger my-3" })
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.ImageUrl, new { @class = "col-form-label col-md-2" })
+        <div class="col-md-4">
+            @Html.EditorFor(x => x.ImageUrl,
+                new { htmlAttributes = new { @class = "form-control", min = "0" } })
+            @Html.ValidationMessageFor(x => x.ImageUrl, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" type="button" id="btnSelectImage">Chọn ảnh</button>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <label class="col-form-label col-2">Xem trước</label>
+        <div class="col-md-6 d-flex justify-content-start">
+            <img src="@Model.ImageUrl" id="previewImage" style="width: 250px;" class="" />
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.Discount, new { @class = "col-form-label col-2" })
+        <div class="col-md-6">
+            @Html.EditorFor(x => x.Discount, new { htmlAttributes = new { @class = "form-control", min = "0", step = "1", value = "0" } })
+            @Html.ValidationMessageFor(x => x.Discount, "", new { @class = "text-danger my-3" })
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.Quantity, new { @class = "col-form-label col-2" })
+        <div class="col-md-6">
+            @Html.EditorFor(x => x.Quantity, new { htmlAttributes = new { @class = "form-control", min = "0", step = "1", value = "0" } })
+            @Html.ValidationMessageFor(x => x.Quantity, "", new { @class = "text-danger my-3" })
+        </div>
+    </div>
+
+    <div class="row">
+        @Html.LabelFor(x => x.Rate, new { @class = "col-form-label col-2" })
+        <div class="col-md-6">
+            <div class="rating form-control border-0"></div>
+            @Html.TextBoxFor(x => x.Rate, new { @class = "hidden" })
+            @Html.ValidationMessageFor(x => x.Rate, "", new { @class = "text-danger my-3" })
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.CategoryId, new { @class = "col-form-label col-2" })
+        <div class="col-md-6">
+            @Html.DropDownListFor(x => x.CategoryId, selectCategory, new { @class = "form-select" })
+            @Html.ValidationMessageFor(x => x.CategoryId, "", new { @class = "text-danger my-3" })
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-3">
+            <button class="btn btn-primary">Cập nhật</button>
+        </div>
+    </div>
+}
+@section footerCss
+{
+    <link href="~/Assets/Common/Library/RatingStar/jquery.raty.css" rel="stylesheet" />
+    <style>
+        .hidden {
+            width: 0;
+            height: 0;
+            opacity: 0;
+        }
+    </style>
+}
+@section footerJs
+{
+    <script src="~/Assets/Common/Library/RatingStar/jquery.raty.js"></script>
+    <script>
+        const rate = $(`#Rate`).val();
+        $('.rating').raty({
+            score: rate,
+            path: '/Assets/Common/Library/RatingStar/Images',
+            click: function (score) {
+                $('input#Rate').val(score);
+            }
+        });
+
+        $(`#btnSelectImage`).click(function () {
+            const ckfinder = new CKFinder();
+            ckfinder.selectActionFunction = function (url) {
+
+                $(`input#ImageUrl`).val(url);
+                $(`img#previewImage`).attr('src', url);
+            };
+            ckfinder.popup();
+        });
+    </script>
+}

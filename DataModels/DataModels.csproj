@@ -53,15 +53,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTO\CategoryDto.cs" />
     <Compile Include="DTO\ProductDto.cs" />
+    <Compile Include="EF\Category.cs" />
     <Compile Include="EF\PracticeOnClassDbContext.cs" />
     <Compile Include="EF\Product.cs" />
     <Compile Include="Helpers\BaseDto.cs" />
     <Compile Include="Helpers\ProductHelper.cs" />
-    <Compile Include="Helpers\ProductStatus.cs" />
+    <Compile Include="Helpers\ContextStatus.cs" />
     <Compile Include="Migrations\202310091118020_Create_Product_Table.cs" />
     <Compile Include="Migrations\202310091118020_Create_Product_Table.designer.cs">
       <DependentUpon>202310091118020_Create_Product_Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202310131128594_Create_Categories_Table.cs" />
+    <Compile Include="Migrations\202310131128594_Create_Categories_Table.designer.cs">
+      <DependentUpon>202310131128594_Create_Categories_Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202310131136165_update_Reference_Field.cs" />
+    <Compile Include="Migrations\202310131136165_update_Reference_Field.designer.cs">
+      <DependentUpon>202310131136165_update_Reference_Field.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -76,6 +86,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202310091118020_Create_Product_Table.resx">
       <DependentUpon>202310091118020_Create_Product_Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202310131128594_Create_Categories_Table.resx">
+      <DependentUpon>202310131128594_Create_Categories_Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202310131136165_update_Reference_Field.resx">
+      <DependentUpon>202310131136165_update_Reference_Field.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

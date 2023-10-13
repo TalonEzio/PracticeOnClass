@@ -1,27 +1,48 @@
-﻿@model IEnumerable<Web.MVC.Areas.Admin.Models.ProductViewModel>
+﻿@using Web.MVC.Areas.Admin.Models
+@model IEnumerable<Web.MVC.Areas.Admin.Models.ProductViewModel>
 @{
     ViewBag.Title = "Info";
+    string searchString = ViewBag.searchString;
+    int searchCategoryId = ViewBag.searchCategoryId;
+    var categoryListViewModel = ViewBag.categoryListViewModel as IEnumerable<CategoryViewModel> ?? new List<CategoryViewModel>();
+    var selectCategory = new SelectList(categoryListViewModel, "Id", "VietnameseName",searchCategoryId);
 }
 
 <h2 class="my-2">
     Danh sách sản phẩm @Html.ActionLink("Thêm mới", "Add", "Product", new { area = "Admin" }, new { @class = "btn btn-primary" })
 </h2>
-
+@using (Html.BeginForm("Info","Product",FormMethod.Get))
+{
+    <div class="row my-3">
+        <label class="col-form-label col-lg-auto fw-bold">Từ cần tìm</label>
+        <div class="col-lg-5">
+            <input name="searchString" type="text" class="form-control" value="@searchString" />
+        </div>
+        <label class="col-form-label col-lg-auto fw-bold">Loại</label>
+        <div class="col-lg-3">
+            @Html.DropDownList("searchCategoryId",selectCategory,new {@class="form-select"})
+        </div>
+        <div class="col-auto mt-lg-0 mt-2">
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+        </div>
+    </div>
+}
 
 <div class="row">
-    <div class="col-auto">
+    <div class="col-12">
         <div class="row my-1">
             @foreach (var product in Model)
             {
                 <div class="col-xxl-2 col-xl-3 col-md-4 col-sm-6 col-6 mb-3">
-                    <div class="card border-0 position-relative">
-                        @if (product.Quantity == 0)
-                        {
-                            <div class="no-product">
-                                <span class="no-product-text">Hết hàng</span>
-                            </div>
-                        }
+                    <div class="card border-1 position-relative">
+
                         <div class="card-header p-0 product-image border-0 sale-content">
+                            @if (product.Quantity == 0)
+                            {
+                                <div class="no-product">
+                                    <span class="no-product-text">Hết hàng</span>
+                                </div>
+                            }
                             <img src="@product.ImageUrl.Trim()" class="w-100 h-100 " alt="Ảnh sản phẩm" />
                             @if (product.Discount > 0)
                             {
@@ -30,22 +51,37 @@
                                 </div>
                             }
                         </div>
-                        <div class="card-body">
+                        <div class="card-body position-relative">
+                            @if (product.Quantity == 0)
+                            {
+                                <div class="no-product">
+                                </div>
+                            }
+
                             <h5 class="text-center text-truncate lead">@product.Name</h5>
                             @if (product.Discount == 0)
                             {
-                                <p class="fw-bolder text-center">$@Math.Round(product.Price ?? 0,2)</p>
+                                <p class="fw-bolder text-center">$@Math.Round(product.Price ?? 0, 2)</p>
                             }
                             else
                             {
                                 var newPrice = product.Price - product.Price * product.Discount / 100;
+                                var displayPrice = Math.Round(product.Price ?? 0, 2);
+                                var displayNewPrice = Math.Round(newPrice ?? 0, 2);
                                 <p class="fw-bolder text-center">
-                                    $@Math.Round(newPrice ?? 0,2)
-                                    <span class="text-danger text-decoration-line-through price-small">$@Math.Round(product.Price ?? 0,2)</span>
+                                    $@displayNewPrice
+                                    <span class="text-danger text-decoration-line-through price-small">$@displayPrice</span>
                                 </p>
                             }
 
                             <div data-score="@product.Rate" class="rating"></div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-center border-0">
+                            <div class="btn btn-group">
+                                @Html.ActionLink("Sửa", "Update", "Product", new { id = product.Id, area = "Admin" }, new { @class = "btn btn-primary" })
+                                @Html.ActionLink("Xóa", "Delete", "Product", new { id = product.Id, area = "Admin" }, new { @class = "btn btn-danger" })
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -89,7 +125,6 @@
             background-color: #fa6b6b;
             padding: 12px;
             opacity: 1;
-            
             border-radius: 50px;
         }
 
@@ -97,24 +132,24 @@
             font-size: 80%;
             opacity: 0.9;
         }
+
         .sale-content {
             position: relative;
         }
+
         .sale {
             position: absolute;
             top: 3px;
             left: 0;
             backgound-color: #ff8418;
-
         }
+
         .sale-text {
             color: white;
             background-color: #ff8418;
             padding: 3px 5px 3px 3px;
             border-bottom-right-radius: 50px;
             border-top-right-radius: 50px;
-
-            
         }
     </style>
 }

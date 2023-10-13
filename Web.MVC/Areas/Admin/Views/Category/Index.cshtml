@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Web.MVC.Areas.Admin.Models.CategoryViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+
+@Html.ActionLink("Thêm mới", "Create", "Category",new{@class="btn btn-primary"})
+
+@if (Model.Any())
+{
+    <div class="row">
+        <div class="col-8">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            Tên
+                        </th>
+                        <th>
+                            Tên tiếng Việt
+                        </th>
+                        <th>
+                            Chức năng
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td>
+                                @category.Name
+                            </td>
+                            <td>
+                                @category.VietnameseName
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    @Html.ActionLink("Sửa", "Update", "Category", new { area = "Admin", id = category.Id }, new { @class = "btn btn-primary" })
+                                    @Html.ActionLink("Xóa", "Delete", "Category", new { area = "Admin", id = category.Id }, new { @class = "btn btn-danger" })
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+}
+else
+{
+    <h2>Chưa có danh mục, thêm mới ở @Html.ActionLink("đây", "Create", "Category")</h2>
+}

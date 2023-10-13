@@ -6,10 +6,6 @@ namespace DataModels.Helpers
     {
         private PracticeOnClassDbContext _context;
 
-        public PracticeOnClassDbContext Context
-        {
-            get => _context ?? (_context = new PracticeOnClassDbContext());
-            private set => _context = value;
-        }
+        public PracticeOnClassDbContext Context => _context ?? (_context = new PracticeOnClassDbContext());
     }
 }

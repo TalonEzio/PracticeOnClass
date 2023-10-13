@@ -2,11 +2,8 @@
 using DataModels.DTO;
 using DataModels.EF;
 using DataModels.Helpers;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using Web.MVC.Areas.Admin.Models;
 
@@ -15,55 +12,129 @@ namespace Web.MVC.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IMapper _mapper;
+        private readonly ProductDto _productDto;
 
-        public ProductController(IMapper mapper)
+        public ProductController(IMapper mapper, ProductDto productDto)
         {
             _mapper = mapper;
+            _productDto = productDto;
         }
-
+        [HttpGet]
         public async Task<ActionResult> Index()
             => await Task.FromResult<ActionResult>(RedirectToAction("Info"));
 
         [HttpGet]
-        public async Task<ActionResult> Info()
+        public async Task<ActionResult> Info(string searchString = "", int searchCategoryId = 0)
         {
-            var productDto = new ProductDto();
-            var productList = await productDto.GetAll();
-            var productListViewModels = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductViewModel>>(productList);
-            return View(productListViewModels);
+            var customList = new List<CategoryViewModel>
+            {
+                new CategoryViewModel()
+                {
+                    Id = 0,
+                    Name = "All",
+                    VietnameseName = "Tất cả"
+                }
+            };
+            customList.AddRange(await LoadCategoryList());
+            ViewBag.categoryListViewModel = customList;
+            ViewBag.searchString = searchString;
+            ViewBag.searchCategoryId = searchCategoryId;
+
+
+            var productList = await _productDto.GetAll(searchString, searchCategoryId);
+            var productListViewModel = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductViewModel>>(productList);
+            return View(productListViewModel);
         }
 
         [HttpGet]
         public async Task<ActionResult> Add()
-            => await Task.FromResult<ActionResult>(View());
+        {
+            ViewBag.categoryListViewModel = await LoadCategoryList();
+            return await Task.FromResult<ActionResult>(View());
+        }
         [HttpPost]
         public async Task<ActionResult> Add(ProductViewModel model)
         {
-            var uploadImage = Request.Files[nameof(model.ImageUrl)];
-            model.ImageUrl = HandleFile(uploadImage);
             if (ModelState.IsValid)
             {
                 var productDto = new ProductDto();
                 var product = _mapper.Map<Product>(model);
-                ProductStatus insertResult = await productDto.Create(product);
-                if (insertResult == ProductStatus.Created)
+                ContextStatus insertResult = await productDto.Create(product);
+                if (insertResult == ContextStatus.Created)
                 {
                     return RedirectToAction("Info");
                 }
             }
+            ViewBag.categoryListViewModel = await LoadCategoryList();
             ModelState.AddModelError("", @"Lỗi thêm mới");
             return View();
         }
 
-        private string HandleFile(HttpPostedFileBase uploadImage)
+        [HttpGet]
+        public async Task<ActionResult> Update(int id)
         {
-            if (uploadImage != null && uploadImage.ContentLength > 0)
+            ViewBag.categoryListViewModel = await LoadCategoryList();
+            var product = await _productDto.GetProductById(id);
+            var productViewModel = _mapper.Map<ProductViewModel>(product);
+            return await Task.FromResult<ActionResult>(View(productViewModel));
+        }
+        [HttpPost]
+        public async Task<ActionResult> Update(ProductViewModel model)
+        {
+            if (ModelState.IsValid)
             {
-                var folderPath = Server.MapPath("~/Uploads/Images");
-                uploadImage.SaveAs(Path.Combine(folderPath, uploadImage.FileName));
-                return "\\" + Path.Combine("Uploads", "Images", uploadImage.FileName);
+                var productDto = new ProductDto();
+                var product = _mapper.Map<Product>(model);
+                ContextStatus insertResult = await productDto.Update(product);
+                if (insertResult == ContextStatus.Updated)
+                {
+                    return RedirectToAction("Info");
+                }
             }
-            return String.Empty;
+            ModelState.AddModelError("", @"Lỗi cập nhật");
+            ViewBag.categoryListViewModel = await LoadCategoryList();
+
+            return RedirectToAction("Update", model.Id);
+        }
+        public async Task<ActionResult> Delete(int id)
+        {
+            var product = await _productDto.GetProductById(id);
+            var productViewModel = _mapper.Map<ProductViewModel>(product);
+            return await Task.FromResult(View(productViewModel));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Delete(CategoryViewModel model)
+        {
+
+            ContextStatus createStatus = await _productDto.Delete(model.Id);
+            if (createStatus == ContextStatus.Deleted)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", @"Lỗi xóa");
+
+            return View();
+
+        }
+
+
+
+
+
+
+
+
+        private async Task<IEnumerable<CategoryViewModel>> LoadCategoryList()
+        {
+            var categoryDto = new CategoryDto();
+            var categoryList = await categoryDto.GetAll();
+
+            var categoryListViewModel =
+                _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryViewModel>>(categoryList);
+
+            return categoryListViewModel ?? new List<CategoryViewModel>();
         }
     }
 }

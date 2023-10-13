@@ -13,6 +13,8 @@ namespace Web.MVC.Assets.Common.Library.AutoMapper
                 {
                     cfg.CreateMap<Product, ProductViewModel>();
                     cfg.CreateMap<ProductViewModel, Product>();
+                    cfg.CreateMap<Category, CategoryViewModel>();
+                    cfg.CreateMap<CategoryViewModel, Category>();
                 }
 
             );

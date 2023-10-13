@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataModels.EF
 {
@@ -8,8 +9,10 @@ namespace DataModels.EF
         public int Id { get; set; }
 
         [StringLength(50)]
+        [DataType("nvarchar")]
         public string Name { get; set; }
 
+        [DataType("nvarchar")]
         public string ImageUrl { get; set; }
 
         public decimal? Price { get; set; } = 0;
@@ -27,5 +30,9 @@ namespace DataModels.EF
         public DateTime? Deleted { get; set; }
 
         public bool IsDeleted { get; set; } = false;
+
+        [ForeignKey(nameof(Category))]
+        public int CategoryId { get; set; }
+        public virtual Category Category { get; set; }
     }
 }

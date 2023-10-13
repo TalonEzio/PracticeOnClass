@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Web.MVC.Areas.Admin.Models
 {
@@ -19,6 +18,7 @@ namespace Web.MVC.Areas.Admin.Models
 
         [Display(Name = "Giá sản phẩm ($)")]
         [Required(ErrorMessage = "{0} là bắt buộc")]
+        [Range(0, 10000, ErrorMessage = "{0} chỉ trong khoảng {1} tới {2}")]
         public decimal? Price { get; set; } = 0;
 
         [Display(Name = "Giảm giá (%)")]
@@ -35,9 +35,8 @@ namespace Web.MVC.Areas.Admin.Models
         [Range(0, 5, ErrorMessage = "{0} chỉ trong khoảng {0} tới {1}")]
         public int? Rate { get; set; } = 0;
 
-        public IEnumerator GetEnumerator()
-        {
-            throw new System.NotImplementedException();
-        }
+        [Display(Name = "Danh mục")]
+        [Required(ErrorMessage = "{0} là bắt buộc")]
+        public int CategoryId { get; set; }
     }
 }

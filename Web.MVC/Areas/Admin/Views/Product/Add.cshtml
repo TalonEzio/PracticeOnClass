@@ -1,18 +1,26 @@
-﻿@model Web.MVC.Areas.Admin.Models.ProductViewModel
+﻿@using Web.MVC.Areas.Admin.Models
+@model ProductViewModel
+
 @{
-    ViewBag.Title = "Add";
+    ViewBag.Title = "Thêm sản phẩm";
+    var categoryListViewModel = ViewBag.categoryListViewModel as IEnumerable<CategoryViewModel> ?? new List<CategoryViewModel>();
+    var selectCategory = new SelectList(categoryListViewModel, "Id", "VietnameseName");
+
+    //string firstimageUrl = String.IsNullOrEmpty(Model.ImageUrl) ? "/Uploads/Images/NoProduct.png" : Model.ImageUrl;
+    string firstimageUrl = "/Uploads/Images/NoProduct.png";
+
 }
 
-<h2>Thêm sản phẩm mới</h2>
+<h2>Thêm sản phẩm</h2>
 
-@using (Html.BeginForm("Add", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
     <div class="row mb-2">
         @Html.LabelFor(x => x.Name, new { @class = "col-form-label col-2" })
-        <div class="col-4">
+        <div class="col-md-6">
             @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
             @Html.ValidationMessageFor(x => x.Name, "", new { @class = "text-danger my-3" })
         </div>
@@ -20,24 +28,34 @@
 
     <div class="row mb-2">
         @Html.LabelFor(x => x.Price, new { @class = "col-form-label col-2" })
-        <div class="col-4">
+        <div class="col-md-6">
             @Html.EditorFor(x => x.Price,
-                new { htmlAttributes = new { @class = "form-control", type = "number", min = "0", step = "0.01", value = "0" } })
+                new { htmlAttributes = new { @class = "form-control", type = "number", step = "0.01" } })
             @Html.ValidationMessageFor(x => x.Price, "", new { @class = "text-danger my-3" })
         </div>
     </div>
+
     <div class="row mb-2">
-        @Html.LabelFor(x => x.ImageUrl, new { @class = "col-form-label col-2" })
-        <div class="col-4">
+        @Html.LabelFor(x => x.ImageUrl, new { @class = "col-form-label col-md-2" })
+        <div class="col-md-4">
             @Html.EditorFor(x => x.ImageUrl,
-                new { htmlAttributes = new { @class = "form-control", type = "file", min = "0", step = "0.01", value = "0" } })
+                new { htmlAttributes = new { @class = "form-control"} })
             @Html.ValidationMessageFor(x => x.ImageUrl, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" type="button" id="btnSelectImage">Chọn ảnh</button>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <label class="col-form-label col-2">Xem trước</label>
+        <div class="col-md-6 d-flex justify-content-start">
+            <img src="@firstimageUrl" id="previewImage" style="width: 250px;" class="" />
         </div>
     </div>
 
     <div class="row mb-2">
         @Html.LabelFor(x => x.Discount, new { @class = "col-form-label col-2" })
-        <div class="col-4">
+        <div class="col-md-6">
             @Html.EditorFor(x => x.Discount, new { htmlAttributes = new { @class = "form-control", min = "0", step = "1", value = "0" } })
             @Html.ValidationMessageFor(x => x.Discount, "", new { @class = "text-danger my-3" })
         </div>
@@ -45,15 +63,15 @@
 
     <div class="row mb-2">
         @Html.LabelFor(x => x.Quantity, new { @class = "col-form-label col-2" })
-        <div class="col-4">
+        <div class="col-md-6">
             @Html.EditorFor(x => x.Quantity, new { htmlAttributes = new { @class = "form-control", min = "0", step = "1", value = "0" } })
             @Html.ValidationMessageFor(x => x.Quantity, "", new { @class = "text-danger my-3" })
         </div>
     </div>
 
-    <div class="row mb-2">
+    <div class="row">
         @Html.LabelFor(x => x.Rate, new { @class = "col-form-label col-2" })
-        <div class="col-4">
+        <div class="col-md-6">
             <div class="rating form-control border-0"></div>
             @Html.TextBoxFor(x => x.Rate, new { @class = "hidden" })
             @Html.ValidationMessageFor(x => x.Rate, "", new { @class = "text-danger my-3" })
@@ -61,8 +79,16 @@
     </div>
 
     <div class="row mb-2">
+        @Html.LabelFor(x => x.CategoryId, new { @class = "col-form-label col-2" })
+        <div class="col-md-6">
+            @Html.DropDownListFor(x => x.CategoryId, selectCategory, new { @class = "form-select" })
+            @Html.ValidationMessageFor(x => x.CategoryId, "", new { @class = "text-danger my-3" })
+        </div>
+    </div>
+
+    <div class="row mb-2">
         <div class="col-3">
-            <button class="btn btn-primary">Thêm mới</button>
+            <button class="btn btn-primary" type="submit">Thêm mới</button>
         </div>
     </div>
 }
@@ -73,7 +99,6 @@
         .hidden {
             width: 0;
             height: 0;
-            -ms-opacity: 0;
             opacity: 0;
         }
     </style>
@@ -82,12 +107,23 @@
 {
     <script src="~/Assets/Common/Library/RatingStar/jquery.raty.js"></script>
     <script>
+        const rate = $(`#Rate`).val();
         $('.rating').raty({
+            score: rate,
             path: '/Assets/Common/Library/RatingStar/Images',
-            click: function (score, evt) {
-                //alert('ID: ' + this.id + "\nscore: " + score + "\nevent: " + evt);
+            click: function (score) {
                 $('input#Rate').val(score);
             }
+        });
+
+        $(`#btnSelectImage`).click(function () {
+            const ckfinder = new CKFinder();
+            ckfinder.selectActionFunction = function (url) {
+
+                $(`input#ImageUrl`).val(url);
+                $(`img#previewImage`).attr('src', url);
+            };
+            ckfinder.popup();
         });
     </script>
 }
